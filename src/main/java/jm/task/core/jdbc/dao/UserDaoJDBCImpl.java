@@ -14,9 +14,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
 
-        Connection Connection = null;
-        Statement statement = null;
-
         String createTableSQL = """
                 CREATE TABLE IF NOT EXISTS dbuser (
                 id SERIAL PRIMARY KEY,
@@ -24,41 +21,13 @@ public class UserDaoJDBCImpl implements UserDao {
                 lastName VARCHAR(20) NOT NULL,
                 age SMALLINT NOT NULL)""";
 
-        try {
-            Connection = Util.connect();
-        } catch (SQLException e) {
-            System.out.println("Ошибка подключения");
-        }
+        try (Connection connection = Util.connect()) {
 
-        if (Connection != null) {
-            System.out.println("Вы успешно подключились к базе данных");
-        } else {
-            System.out.println("Не удалось установить соединение с базой данных");
-        }
-
-        try {
-            statement = Connection.createStatement();
-
+            Statement statement = connection.createStatement();
             statement.execute(createTableSQL);
-            System.out.println("Таблица создана!");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (Connection != null) {
-                try {
-                    Connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
