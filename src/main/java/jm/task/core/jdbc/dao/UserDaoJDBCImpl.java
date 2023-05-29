@@ -21,9 +21,9 @@ public class UserDaoJDBCImpl implements UserDao {
                 lastName VARCHAR(20) NOT NULL,
                 age SMALLINT NOT NULL)""";
 
-        try (Connection connection = Util.connect()) {
+        try (Connection connection = Util.connect();
+             Statement statement = connection.createStatement()) {
 
-            Statement statement = connection.createStatement();
             statement.execute(createTableSQL);
 
         } catch (SQLException e) {
@@ -33,9 +33,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
 
-        try (Connection Connection = Util.connect()) {
+        try (Connection Connection = Util.connect();
+             Statement statement = Connection.createStatement()) {
 
-            Statement statement = Connection.createStatement();
             statement.execute("DROP TABLE IF EXISTS dbuser");
 
         } catch (SQLException e) {
@@ -45,9 +45,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
 
-        try (Connection Connection = Util.connect()) {
-
-            PreparedStatement prestate = Connection.prepareStatement("INSERT INTO dbuser (name, lastName, age) VALUES (?, ?, ?)");
+        try (Connection Connection = Util.connect();
+             PreparedStatement prestate = Connection.prepareStatement("INSERT INTO dbuser (name, lastName, age) VALUES (?, ?, ?)")) {
 
             prestate.setString(1, name);
             prestate.setString(2, lastName);
@@ -62,9 +61,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) {
 
-        try (Connection Connection = Util.connect()) {
+        try (Connection Connection = Util.connect();
+             PreparedStatement prestate = Connection.prepareStatement("DELETE FROM dbuser WHERE Id = ?")) {
 
-            PreparedStatement prestate = Connection.prepareStatement("DELETE FROM dbuser WHERE Id = ?");
             prestate.setLong(1, id);
             prestate.executeUpdate();
 
@@ -77,10 +76,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
         List<User> list = new ArrayList<>();
 
-        try (Connection Connection = Util.connect()) {
-
-            Statement statement = Connection.createStatement();
-            ResultSet table = statement.executeQuery("SELECT * FROM dbuser");
+        try (Connection Connection = Util.connect();
+             Statement statement = Connection.createStatement();
+             ResultSet table = statement.executeQuery("SELECT * FROM dbuser")) {
 
             while (table.next()) {
                 User user = new User(table.getString(2), table.getString(3), table.getByte(4));
@@ -94,9 +92,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
 
-        try (Connection Connection = Util.connect()) {
+        try (Connection Connection = Util.connect();
+             Statement statement = Connection.createStatement()) {
 
-            Statement statement = Connection.createStatement();
             statement.execute("TRUNCATE dbuser");
 
         } catch (SQLException e) {
