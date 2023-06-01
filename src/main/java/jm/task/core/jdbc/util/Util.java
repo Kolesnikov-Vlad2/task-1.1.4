@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.util;
 
 import jm.task.core.jdbc.model.User;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import java.io.FileInputStream;
@@ -20,7 +21,7 @@ public class Util {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    public static SessionFactory connection() throws SQLException, IOException {
+    public static Session connection() throws SQLException, IOException {
 
         Properties properties = new Properties();
         InputStream inputStream = new FileInputStream("src/main/resources/hibernate.properties");
@@ -29,6 +30,6 @@ public class Util {
                 .setProperties(properties)
                 .addAnnotatedClass(User.class)
                 .buildSessionFactory();
-        return sessionFactory;
+        return sessionFactory.openSession();
     }
 }

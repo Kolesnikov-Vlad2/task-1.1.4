@@ -1,28 +1,21 @@
 package jm.task.core.jdbc.dao;
 
-import jakarta.persistence.EntityManager;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
-
     }
-
 
     @Override
     public void createUsersTable() {
-
         Transaction transaction = null;
-
         String createTableSQL = """
                 CREATE TABLE IF NOT EXISTS dbuser (
                 id SERIAL PRIMARY KEY,
@@ -30,8 +23,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 lastName VARCHAR(20) NOT NULL,
                 age SMALLINT NOT NULL)""";
 
-        try (SessionFactory sessionFactory = Util.connection();
-                Session session = sessionFactory.openSession()) {
+        try (Session session = Util.connection()) {
 
             transaction = session.beginTransaction();
             session.createNativeQuery(createTableSQL).executeUpdate();
@@ -47,8 +39,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void dropUsersTable() {
         Transaction transaction = null;
-        try (SessionFactory sessionFactory = Util.connection();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = Util.connection()) {
 
             transaction = session.beginTransaction();
             session.createNativeQuery("DROP TABLE IF EXISTS dbuser").executeUpdate();
@@ -64,8 +55,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
         Transaction transaction = null;
-        try (SessionFactory sessionFactory = Util.connection();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = Util.connection()) {
 
             User user = new User(name, lastName, age);
 
@@ -84,8 +74,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void removeUserById(long id) {
         Transaction transaction = null;
-        try (SessionFactory sessionFactory = Util.connection();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = Util.connection()) {
 
             transaction = session.beginTransaction();
 
@@ -104,8 +93,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         Transaction transaction = null;
-        try (SessionFactory sessionFactory = Util.connection();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = Util.connection()) {
 
             transaction = session.beginTransaction();
             Query<User> query =  session.createQuery("FROM User", User.class);
@@ -123,8 +111,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void cleanUsersTable() {
         Transaction transaction = null;
-        try (SessionFactory sessionFactory = Util.connection();
-             Session session = sessionFactory.openSession()) {
+        try (Session session = Util.connection()) {
 
             transaction = session.beginTransaction();
             session.createNativeQuery("TRUNCATE dbuser").executeUpdate();
